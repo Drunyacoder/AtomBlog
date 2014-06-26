@@ -24,8 +24,8 @@ $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}blog` (
   `rating` INT( 11 ) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-$FpsInstallQueries[] = "DROP TABLE IF EXISTS `{$db_prefix}blog_sections`";
-$FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}blog_sections` (
+$FpsInstallQueries[] = "DROP TABLE IF EXISTS `{$db_prefix}blog_categories`";
+$FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}blog_categories` (
   `id` int(11) NOT NULL auto_increment,
   `parent_id` int(11) default '0',
   `path` VARCHAR( 255 ) NOT NULL DEFAULT '',
@@ -35,7 +35,7 @@ $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}blog_sections` (
   `no_access` VARCHAR( 255 ) NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-$FpsInstallQueries[] = "INSERT INTO `{$db_prefix}blog_sections` VALUES (1, 0, '', '', 'Test category', '1', '')";
+$FpsInstallQueries[] = "INSERT INTO `{$db_prefix}blog_categories` VALUES (1, 0, '', '', 'Test category', '1', '')";
 
 $FpsInstallQueries[] = "DROP TABLE IF EXISTS `{$db_prefix}blog_add_fields`";
 $FpsInstallQueries[] = "CREATE TABLE `{$db_prefix}blog_add_fields` (

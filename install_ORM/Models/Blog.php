@@ -35,7 +35,7 @@ class BlogModel extends FpsModel
             'foreignKey' => 'author_id',
       	),
         'category' => array(
-            'model' => 'BlogSections',
+            'model' => 'BlogCategories',
             'type' => 'has_one',
             'foreignKey' => 'category_id',
         ),
