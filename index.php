@@ -144,21 +144,15 @@ Class BlogModule extends Module {
 			
 			
 			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$markers['entry_url'] = $entry_url;
 			
 
 			// Cut announce
-			$announce = $this->Textarier->getAnnounce($result->getMain()
-				, $entry_url
-				, 0 
-				, $this->Register['Config']->read('announce_lenght', $this->module)
+			$markers['announce'] = $this->Textarier->getAnnounce($result->getMain()
 				, $result
+				, $this->Register['Config']->read('announce_lenght', $this->module)
 			);
-			$announce = $this->insertImageAttach($result, $announce);
-			
-
-			$markers['announce'] = $announce;
 			
 			
 			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
@@ -257,7 +251,7 @@ Class BlogModule extends Module {
             }
         }
 
-        pr($query_params); die();
+
 		$total = $this->Model->getTotal($query_params);
 		list ($pages, $page) = pagination( $total, Config::read('per_page', $this->module), '/' . $this->module . '/');
 		$this->Register['pages'] = $pages;
@@ -309,20 +303,14 @@ Class BlogModule extends Module {
 			
 			
 			$markers['moder_panel'] = $this->_getAdminBar($result);
-			$entry_url = get_url(entryUrl($result, $this->module));
+			$entry_url = entryUrl($result, $this->module);
 			$markers['entry_url'] = $entry_url;
 			
 			
-			$announce = $this->Textarier->getAnnounce($result->getMain()
-				, $entry_url
-				, 0 
-				, $this->Register['Config']->read('announce_lenght', $this->module)
+			$markers['announce'] = $this->Textarier->getAnnounce($result->getMain()
 				, $result
+				, $this->Register['Config']->read('announce_lenght', $this->module)
 			);
-			$announce = $this->insertImageAttach($result, $announce);
-
-
-			$markers['announce'] = $announce;
 			
 			
 			$markers['category_url'] = get_url('/' . $this->module . '/category/' . $result->getCategory_id());
@@ -429,16 +417,11 @@ Class BlogModule extends Module {
 		$markers['profile_url'] = getProfileUrl($entity->getAuthor()->getId());
 		
 		
-		$entry_url = get_url(entryUrl($entity, $this->module));
+		$entry_url = entryUrl($entity, $this->module);
 		$markers['entry_url'] = $entry_url;
-		
-		
-		$announce = $entity->getMain();
-		$announce = $this->Textarier->print_page($announce, $entity->getAuthor()->getStatus(), $entity->getTitle());
-		$announce = $this->insertImageAttach($entity, $announce);
+		$markers['main_text'] = $this->Textarier->parseBBCodes($entity->getMain(), $entity);
 
 
-		$markers['main_text'] = $announce;
 		$entity->setAdd_markers($markers);
 		if ($entity->getTags()) $entity->setTags(explode(',', $entity->getTags()));
 		
@@ -531,17 +514,14 @@ Class BlogModule extends Module {
 
 
 			$markers['moder_panel'] = $this->_getAdminBar($entity);
-			$entry_url = get_url(entryUrl($entity, $this->module));
+			$entry_url = entryUrl($entity, $this->module);
 			$markers['entry_url'] = $entry_url;
 
-			
-			
-			$announce = $this->Textarier->getAnnounce($entity->getMain(), $entry_url, 0, $this->Register['Config']->read('announce_lenght', $this->module), $entity);
-			$announce = $this->insertImageAttach($entity, $announce);
 
-
-			$markers['announce'] = $announce;
-
+			$markers['announce'] = $this->Textarier->getAnnounce(
+				$entity->getMain(), 
+				$entity, 
+				$this->Register['Config']->read('announce_lenght', $this->module));
 			
 
 			$markers['category_url'] = get_url($this->getModuleURL('category/' . $entity->getCategory_id()));
@@ -550,9 +530,9 @@ Class BlogModule extends Module {
 
 			//set users_id that are on this page
 			$this->setCacheTag(array(
-			'user_id_' . $entity->getAuthor_id(),
-			'record_id_' . $entity->getId(),
-			'category_id_' . $id,
+                'user_id_' . $entity->getAuthor_id(),
+                'record_id_' . $entity->getId(),
+                'category_id_' . $id,
 			));
 
 
@@ -676,7 +656,7 @@ Class BlogModule extends Module {
 		// Errors
 		if (!empty($errors)) {
 			$_SESSION['FpsForm'] = array_merge($form_fields, $_POST);
-			$_SESSION['FpsForm']['error'] = $this->Register['Validate']->wrapErrors($errors);
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/' . $this->module . '/add_form/');
 		}
 			
@@ -817,7 +797,7 @@ Class BlogModule extends Module {
 		
 		
         $markers->setPreview($this->Parser->getPreview($markers->getMain()));
-        $markers->setErrors($this->Parser->getErrors());
+        $markers->setErrors($this->Register['Validate']->getErrors());
         if (isset($_SESSION['viewMessage'])) unset($_SESSION['viewMessage']);
         if (isset($_SESSION['FpsForm'])) unset($_SESSION['FpsForm']);
 
@@ -955,8 +935,7 @@ Class BlogModule extends Module {
 			$_SESSION['FpsForm'] = array_merge(array('title' => null, 'main_text' => null, 'in_cat' => $in_cat, 
 				'description' => null, 'tags' => null, 'sourse' => null, 'sourse_email' => null, 
 				'sourse_site' => null, 'commented' => null, 'available' => null), $_POST);
-			$_SESSION['FpsForm']['error']   = '<p class="errorMsg">' . __('Some error in form') . '</p>'
-				."\n".'<ul class="errorMsg">'."\n".$errors.'</ul>'."\n";
+			$_SESSION['FpsForm']['errors'] = $this->Register['DocParser']->wrapErrors($errors);
 			redirect('/' . $this->module . '/edit_form/' . $id);
 		}
 		
