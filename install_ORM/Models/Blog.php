@@ -64,6 +64,28 @@ class BlogModel extends FpsModel
 		$entities = $this->getMaterialsAttaches($entities, 'blog');
 		return $entities;
    	}
+   	
+   	
+   	/**
+   	 * @param @conditions array
+   	 */
+   	public function getBlogs($conditions = array())
+    {
+        $blogs = $this->getCollection(array($conditions), array(
+            'group' => 'author_id',
+            'fields' => array('*', 'COUNT(id) as posts_cnt'),
+        ));
+    
+        return ($blogs) ? $blogs : array();
+    }
+    
+    
+    public function removeUserBlog($author_id)
+    {
+        $this->getDbDriver()->delete($this->Table, array(
+            'author_id' => $author_id
+        ));
+    }
 	
 
     /**
