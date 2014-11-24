@@ -4,12 +4,12 @@
 | @Author:       Andrey Brykin (Drunya)        |
 | @Email:        drunyacoder@gmail.com         |
 | @Site:         http://atomx.net              |
-| @Version:      2.0.0                         |
+| @Version:      2.0.1                         |
 | @Project:      CMS                           |
 | @Package       AtomX CMS                     |
 | @Subpackege    Blog Module                   |
 | @Copyright     ©Andrey Brykin                |
-| @Last mod      2014/05/07                    |
+| @Last mod      2014/11/24                    |
 |----------------------------------------------|
 |											   |
 | any partial or not partial extension         |
@@ -96,7 +96,7 @@ Class BlogModule extends Module {
 
 
         //формируем блок со списком  разделов
-        $this->_getCatsTree(false, $main_user ? '/' . $main_user->getId() : '');
+        $this->_getCatsTree(false, !empty($main_user) ? '/' . $main_user->getId() : '');
 
 
 		$total = $this->Model->getTotal($query_params);
