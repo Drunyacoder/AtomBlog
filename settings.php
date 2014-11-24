@@ -189,7 +189,7 @@ class BlogSettingsController
 		                <div class="setting-item"><div class="left">
 			                ' . __('Text of material') . '
 		                </div><div class="right">
-			                <textarea style="height:200px;" name="main">'.h($entity->getMain()).'</textarea>
+			                <textarea style="height:200px;" name="main">'.$Register['Textarier']->parseBBCodes($entity->getMain(), $entity).'</textarea>
 		                </div><div class="clear"></div></div>
 		                
 		                <div class="setting-item"><div class="left">
